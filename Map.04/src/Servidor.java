@@ -56,24 +56,18 @@ public class Servidor extends JFrame implements Runnable {
 			servidor = new ServerSocket(12345);
 		    Socket clienteConexao = servidor.accept();
 		    
-		    while(true) {
-		    	s = new Scanner(clienteConexao.getInputStream());
-		    	String messagem = "";
-
-		    	while (s.hasNextLine() && !s.nextLine().equals("")) {
-		    		messagem = messagem.concat(s.nextLine());
-		    	}
-
-		    	msg.setText(messagem);		    
+		    s = new Scanner(clienteConexao.getInputStream());
+		    	
+		   	while (s.hasNext()) {
 			    JOptionPane.showMessageDialog(null, "Mensagem recebida!");
-		    }
+		    	msg.setText(msg.getText().concat(s.nextLine() + "\n"));		    
+	    	}
 		    
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 	}
-	
 
 
 }
