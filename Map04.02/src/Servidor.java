@@ -1,14 +1,17 @@
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Servidor extends JFrame implements Runnable {
@@ -17,10 +20,6 @@ public class Servidor extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private ServerSocket servidor;
-	private JTextArea msg;
-	private Scanner s;
-
-
 	public Servidor() {
 		setTitle("Servidor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,16 +30,6 @@ public class Servidor extends JFrame implements Runnable {
 		
 		contentPane.setLayout(null);
 		
-		
-		JLabel label = new JLabel("Mensagem");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setBounds(0, 28, 450, 16);
-		contentPane.add(label);
-		
-		msg = new JTextArea();
-		msg.setBounds(10, 48, 420, 200);
-		contentPane.add(msg);	
-		
 		this.setVisible(true);
 	}
 
@@ -49,19 +38,29 @@ public class Servidor extends JFrame implements Runnable {
 		iniciarServidor();
 	}
 
+	@SuppressWarnings("resource")
 	public void iniciarServidor() {
 		try {
 			servidor = new ServerSocket(12345);
 		    Socket clienteConexao = servidor.accept();
 		    
-		    s = new Scanner(clienteConexao.getInputStream());
+		    new Scanner(clienteConexao.getInputStream());
 		    
-		   	while (s.hasNext()) {	
+		   	
 		   		
 		   		JOptionPane.showMessageDialog(null, "Mensagem recebida!");
-		    	msg.setText(msg.getText().concat(s.nextLine() + "\n"));	
-		    	
-	    	}
+		   		
+		   		BufferedImage img=ImageIO.read(ImageIO.createImageInputStream(clienteConexao.getInputStream()));
+                System.out.println("Image received!!!!"); 
+                
+                JPanel panel = new JPanel();
+                panel.setSize(500,640);
+                panel.setBackground(Color.CYAN);  
+                ImageIcon icon = new ImageIcon(img);  
+                JLabel label = new JLabel();  
+                label.setIcon(icon);  
+                panel.add(label); 
+                contentPane.add(label); 
 		    
 		} catch (IOException e) {
 			e.printStackTrace();

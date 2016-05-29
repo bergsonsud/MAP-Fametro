@@ -1,15 +1,21 @@
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -21,7 +27,8 @@ public class Cliente extends JFrame {
 	private JPanel contentPane;
 	private JTextField destinatario;
 	private Socket conexaoServidor;
-	private JTextArea msg;
+	private JLabel anexo;
+	private File selectedFile;	 
 
 
 	public Cliente() {
@@ -33,19 +40,17 @@ public class Cliente extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Mensagem");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(0, 59, 450, 16);
-		contentPane.add(lblNewLabel);
+		anexo = new JLabel("");
+		anexo.setHorizontalAlignment(SwingConstants.CENTER);
+		anexo.setBounds(0, 59, 450, 16);
+		contentPane.add(anexo);
+		
+
 		
 		destinatario = new JTextField();
 		destinatario.setBounds(155, 25, 134, 28);
 		contentPane.add(destinatario);
 		destinatario.setColumns(10);
-		
-		msg = new JTextArea();
-		msg.setBounds(12, 79, 420, 149);
-		contentPane.add(msg);
 		
 		JLabel lblDestinatrio = new JLabel("Destinatário");
 		lblDestinatrio.setHorizontalAlignment(SwingConstants.CENTER);
@@ -57,16 +62,20 @@ public class Cliente extends JFrame {
 		
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				enviarMsg();
+				enviarMsg(selectedFile);
 			}
 
-			private void enviarMsg() {
+			private void enviarMsg(File selectedFile) {
 				
 				try {
-					PrintStream saida = new PrintStream(conexaoServidor.getOutputStream());
-					saida.println(msg.getText());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+//					PrintStream saida = new PrintStream(conexaoServidor.getOutputStream());
+//					FileOutputStream fos =new FileOutputStream(selectedFile);
+//					DataInputStream in=new DataInputStream(conexaoServidor.getInputStream()); 
+//					DataOutputStream out = new DataOutputStream(conexaoServidor.getOutputStream()); 
+					BufferedImage bimg = ImageIO.read(selectedFile); 
+					ImageIO.write(bimg,"JPG",conexaoServidor.getOutputStream()); 
+					
+				} catch (IOException e) {					
 					e.printStackTrace();
 				}
 				
@@ -76,6 +85,14 @@ public class Cliente extends JFrame {
 		btnEnviar.setBounds(152, 239, 117, 29);
 		contentPane.add(btnEnviar);
 		this.setVisible(true);
+		
+		JFileChooser chooser = new JFileChooser();
+		int returnValue = chooser.showOpenDialog(null);
+		
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			selectedFile = chooser.getSelectedFile();
+	          anexo.setText(selectedFile.getName()+" anexado!");
+	    }
 		
 		conectarServidor();
 	}
