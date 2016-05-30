@@ -1,13 +1,10 @@
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
@@ -28,10 +25,13 @@ public class Cliente extends JFrame {
 	private JTextField destinatario;
 	private Socket conexaoServidor;
 	private JLabel anexo;
-	private File selectedFile;	 
+	private File selectedFile;
+	
 
 
 	public Cliente() {
+		
+		
 		setTitle("Cliente");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -58,6 +58,7 @@ public class Cliente extends JFrame {
 		lblDestinatrio.setBounds(0, 6, 450, 16);
 		contentPane.add(lblDestinatrio);
 		
+		
 		JButton btnEnviar = new JButton("Enviar");
 		
 		btnEnviar.addActionListener(new ActionListener() {
@@ -68,12 +69,12 @@ public class Cliente extends JFrame {
 			private void enviarMsg(File selectedFile) {
 				
 				try {
-//					PrintStream saida = new PrintStream(conexaoServidor.getOutputStream());
-//					FileOutputStream fos =new FileOutputStream(selectedFile);
-//					DataInputStream in=new DataInputStream(conexaoServidor.getInputStream()); 
-//					DataOutputStream out = new DataOutputStream(conexaoServidor.getOutputStream()); 
+
 					BufferedImage bimg = ImageIO.read(selectedFile); 
 					ImageIO.write(bimg,"JPG",conexaoServidor.getOutputStream()); 
+					System.out.println("imagem enviada");
+					
+					
 					
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -92,14 +93,16 @@ public class Cliente extends JFrame {
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			selectedFile = chooser.getSelectedFile();
 	          anexo.setText(selectedFile.getName()+" anexado!");
+	          conectarServidor();
 	    }
 		
-		conectarServidor();
+		
 	}
 	
 	public void conectarServidor() {
 		try {
 			conexaoServidor = new Socket("127.0.0.1",12345);
+			System.out.println(">>Cliente conectado com Servidor<<");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
