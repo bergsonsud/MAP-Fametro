@@ -26,7 +26,7 @@ public class Servidor extends JFrame implements Runnable {
 		
 		setTitle("Servidor");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(600, 100, 450, 300);
+		setBounds(600, 100, 1024, 768);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -51,8 +51,10 @@ public class Servidor extends JFrame implements Runnable {
 
 		    
 		    InputStream inputStream = clienteConexao.getInputStream();
-
-		    byte[] sizeAr = new byte[4];
+		    
+		    new Util();
+			byte[] sizeAr = new byte[99999];
+		   // byte[] sizeAr = Util.getBytes(inputStream);
 	        inputStream.read(sizeAr);
 	        int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
 
