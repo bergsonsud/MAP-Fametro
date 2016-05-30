@@ -58,15 +58,7 @@ public class Servidor extends JFrame implements Runnable {
     		 ImageImplement panel = new ImageImplement(new ImageIcon("D:/1.jpg").getImage());
    			 contentPane.add(panel);
    			 contentPane.repaint();
-             
-          	  
-          	  
 
-
-
-
-                        
-                
                 
 		    
 		} catch (IOException e) {

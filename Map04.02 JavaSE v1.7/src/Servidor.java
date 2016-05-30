@@ -1,8 +1,12 @@
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -44,30 +48,25 @@ public class Servidor extends JFrame implements Runnable {
 			System.out.println(">>Servidor Iniciado<<");
 		    Socket clienteConexao = servidor.accept();
 		    System.out.println(">>Servidor conectado com Cliente<<");
-		   
 
-		   	
-		   		   	
-		   		System.out.println(">>Imagem n recebida<<");      
-		   		Image img = ImageIO.read(ImageIO.createImageInputStream(clienteConexao.getInputStream()));
-                System.out.println(">>Imagem recebida<<");       
-               
-                
-                
-                    
-    		 ImageImplement panel = new ImageImplement(new ImageIcon("D:/1.jpg").getImage());
-   			 contentPane.add(panel);
-   			 contentPane.repaint();
-             
-          	  
-          	  
+		    
+		    InputStream inputStream = clienteConexao.getInputStream();
 
+		    byte[] sizeAr = new byte[4];
+	        inputStream.read(sizeAr);
+	        int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
 
+	        byte[] imageAr = new byte[size];
+	        inputStream.read(imageAr);
+	        
+	        BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
 
-
+	        System.out.println(">>Imagem recebida<<");       
                         
-                
-                
+    		ImageImplement panel = new ImageImplement(image);
+   			contentPane.add(panel);
+   			contentPane.repaint();
+                          
 		    
 		} catch (IOException e) {
 			e.printStackTrace();

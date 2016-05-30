@@ -3,9 +3,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -52,7 +55,7 @@ public class Cliente extends JFrame {
 		contentPane.add(destinatario);
 		destinatario.setColumns(10);
 		
-		JLabel lblDestinatrio = new JLabel("Destinatário");
+		JLabel lblDestinatrio = new JLabel("Destinatï¿½rio");
 		lblDestinatrio.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDestinatrio.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 		lblDestinatrio.setBounds(0, 6, 450, 16);
@@ -71,11 +74,19 @@ public class Cliente extends JFrame {
 				try {
 
 					BufferedImage bimg = ImageIO.read(selectedFile); 
-					ImageIO.write(bimg,"JPG",conexaoServidor.getOutputStream()); 
+					
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			        ImageIO.write(bimg, "jpg", byteArrayOutputStream);
+
+			        byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+			        
+			        OutputStream outputStream = conexaoServidor.getOutputStream();
+			        outputStream.write(size);
+			        outputStream.write(byteArrayOutputStream.toByteArray());
+			        outputStream.flush();
+
 					System.out.println("imagem enviada");
-					
-					
-					
+			        
 				} catch (IOException e) {					
 					e.printStackTrace();
 				}
