@@ -13,7 +13,7 @@ public class Main {
 
 		Thread threadServidor = new Thread(servidor);
 		threadServidor.start();
-		
+
 		new Cliente();
 	}
 }
